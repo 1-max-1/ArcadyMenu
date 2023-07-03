@@ -6,6 +6,7 @@
 		/// Keys are food categories like "Main Option" or "Vegetarian Option". <br/>
 		/// Values are food descriptions like "Meatlovers pizza" or "Pasta bake".
 		/// </summary>
+		/// <remarks>This dictionary could have zero records.</remarks>
 		public Dictionary<string, string> Breakfast { get; private set; }
 
 		/// <summary>
@@ -13,6 +14,7 @@
 		/// Keys are food categories like "Main Option" or "Vegetarian Option". <br/>
 		/// Values are food descriptions like "Meatlovers pizza" or "Pasta bake".
 		/// </summary>
+		/// <remarks>This dictionary could have zero records.</remarks>
 		public Dictionary<string, string> Lunch { get; private set; }
 
 		/// <summary>
@@ -20,6 +22,7 @@
 		/// Keys are food categories like "Main Option" or "Vegetarian Option". <br/>
 		/// Values are food descriptions like "Meatlovers pizza" or "Pasta bake".
 		/// </summary>
+		/// <remarks>This dictionary could have zero records.</remarks>
 		public Dictionary<string, string> Dinner { get; private set; }
 
 		/// <summary>
