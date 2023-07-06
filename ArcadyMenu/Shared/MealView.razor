@@ -1,0 +1,49 @@
+﻿<RadzenCard class="" Style="@($"border: 1px solid {MealColor}")">
+	<p class="mb-4" style="color: @MealColor; font-size: 0.9em;"><b>@MealTitle</b></p>
+
+	@if (IsLoading) {
+		@ChildContent
+	}
+	else if (FoodItems == null || FoodItems.Count == 0) {
+		<p class="text-center mb-4"><b>Menu unavailable</b></p>
+	}
+	else {
+		foreach (var kvp in FoodItems) {
+			<p class="mt-3" style="font-size: 0.7em;">@kvp.Key.ToUpper()</p>
+			<p style="color: @MealColor;">
+				@* HTML wont render the newlines so we need to manually insert breaks here. *@
+				@foreach (var line in kvp.Value.Split("\r\n")) {
+					<b>@line.Trim()</b><br/>
+				}
+			</p>
+		}
+	}
+</RadzenCard>
+
+@code {
+	/// <summary> If <see langword="true"/>, the component will render the child content instead of the meals. </summary>
+	[Parameter]
+	public bool IsLoading { get; set; } = false;
+
+	/// <summary> String to display at the top of the card, e.g. "Breakfast". </summary>
+	[Parameter]
+	public string MealTitle { get; set; } = "";
+
+	/// <summary>
+	/// Specifies the color to use for the border and text items. Defaults to black. <br/>
+	/// Must be in a valid CSS color format (e.g. <b>#ff0812</b>) as it will be passed directly to the component's CSS.
+	/// </summary>
+	[Parameter]
+	public string MealColor { get; set; } = "#000000";
+
+	/// <summary>
+	/// A list of food items to render on the card. Keys should be categories, values should be food descrfiptions. <br/>
+	/// The <c>Breakfast</c>, <c>Lunch</c> and <c>Dinner</c> properties of a <see cref="MealPlan" /> can be passed here.
+	/// </summary>
+	[Parameter]
+	public Dictionary<string, string>? FoodItems { get; set; }
+
+	/// <summary> Child content renders when <see cref="IsLoading" /> is <see langword="true"/>. </summary>
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+}
