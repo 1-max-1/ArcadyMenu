@@ -1,5 +1,5 @@
-﻿<RadzenCard class="" Style="@($"border: 1px solid {MealColor}")">
-	<p class="mb-4" style="color: @MealColor; font-size: 0.9em;"><b>@MealTitle</b></p>
+﻿<RadzenCard class="@Class" Style="@($"border: 1px solid {MealColor}")">
+	<p class="mb-4 fs-5" style="color: @MealColor;"><b>@MealTitle</b></p>
 
 	@if (IsLoading) {
 		@ChildContent
@@ -46,4 +46,8 @@
 	/// <summary> Child content renders when <see cref="IsLoading" /> is <see langword="true"/>. </summary>
 	[Parameter]
 	public RenderFragment? ChildContent { get; set; }
+
+	/// <summary> Additional CSS classes to add onto the root <see cref="RadzenCard" /> element. </summary>
+	[Parameter]
+	public string Class { get; set; } = "";
 }

@@ -1,44 +1,50 @@
-﻿<div class="vstack gap-4" style="max-width: 400px;">
-	<MealView MealTitle="BREAKFAST" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Breakfast" MealColor="#73bffd">
-		<div class="placeholder-glow" style="color: #73bffd;">
-			<p class="placeholder col-4"></p>
-			<p class="placeholder col-7"></p>
-			<p class="placeholder col-7"></p>
-			<p class="col-4"></p>
-			<p class="placeholder col-2"></p>
-			<p class="col-9"></p>
-			<p class="placeholder col-10"></p>
-		</div>
-	</MealView>
+﻿<div class="row row-cols-1 row-cols-md-3 gy-4">
+	<div class="col">
+		<MealView MealTitle="BREAKFAST" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Breakfast" MealColor="#73bffd" Class="h-100">
+			<div class="placeholder-glow" style="color: #73bffd;">
+				<p class="placeholder col-4"></p>
+				<p class="placeholder col-7"></p>
+				<p class="placeholder col-7"></p>
+				<p class="col-4"></p>
+				<p class="placeholder col-2"></p>
+				<p class="col-9"></p>
+				<p class="placeholder col-10"></p>
+			</div>
+		</MealView>
+	</div>
 
-	<MealView MealTitle="LUNCH" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Lunch" MealColor="#53c908">
-		<div class="placeholder-glow" style="color: #53c908;">
-			<p class="placeholder col-10"></p>
-			<p class="placeholder col-1"></p>
-			<p class="placeholder col-4"></p>
-			<p class="placeholder col-7"></p>
-			<p class="placeholder col-10"></p>
-		</div>
-	</MealView>
+	<div class="col">
+		<MealView MealTitle="LUNCH" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Lunch" MealColor="#53c908" Class="h-100">
+			<div class="placeholder-glow" style="color: #53c908;">
+				<p class="placeholder col-10"></p>
+				<p class="placeholder col-1"></p>
+				<p class="placeholder col-4"></p>
+				<p class="placeholder col-7"></p>
+				<p class="placeholder col-10"></p>
+			</div>
+		</MealView>
+	</div>
 
-	<MealView MealTitle="DINNER" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Dinner" MealColor="#ff801d">
-		<div class="placeholder-glow" style="color: #ff801d;">
-			<p class="placeholder col-5"></p>
-			<p class="col-6"></p>
-			<p class="placeholder col-6"></p>
-			<p class="col-5"></p>
-			<p class="placeholder col-1"></p>
-			<p class="placeholder col-10"></p>
-			<p class="placeholder col-5"></p>
-			<p class="placeholder col-6"></p>
-		</div>
-	</MealView>
+	<div class="col">
+		<MealView MealTitle="DINNER" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Dinner" MealColor="#ff801d" Class="h-100">
+			<div class="placeholder-glow" style="color: #ff801d;">
+				<p class="placeholder col-5"></p>
+				<p class="col-6"></p>
+				<p class="placeholder col-6"></p>
+				<p class="col-5"></p>
+				<p class="placeholder col-1"></p>
+				<p class="placeholder col-10"></p>
+				<p class="placeholder col-5"></p>
+				<p class="placeholder col-6"></p>
+			</div>
+		</MealView>
+	</div>
 </div>
 
 @code {
 	/// <summary> If <see langword="true" />, will render loading animations instead of the menu. </summary>
 	[Parameter]
-	public bool IsLoading { get; set; }
+	public bool IsLoading { get; set; } = false;
 
 	/// <summary> The menu/meal plan to render. </summary>
 	[Parameter]

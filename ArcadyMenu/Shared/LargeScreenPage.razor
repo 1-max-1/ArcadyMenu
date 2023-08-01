@@ -1,0 +1,55 @@
+﻿@inject IDataService dataService
+
+@if (isInErrorState) {
+	<div class="d-flex flex-column align-items-center mt-5">
+		<p>Something went wrong.</p>
+		<RadzenButton Click="@(() => LoadMealPlan(selectedWeek))">Retry</RadzenButton>
+	</div>
+}
+else {
+	<div class="d-flex justify-content-center mb-2 mx-1">
+		<p class="me-2 mb-0 align-self-center">Menu for the week of:</p>
+		<RadzenDatePicker TValue="DateTime" ShowTime="@false" DateFormat="dd/MM/yyyy" Style="width: 160px;" Value="@selectedWeek" Change="@OnDateChanged" />
+	</div>
+
+	int index = 0;
+	foreach (string dayOfWeek in daysOfTheWeek) {
+		<div class="mb-5">
+			<h3 class="mb-0"><b>@dayOfWeek</b></h3>
+			<hr class="rz-color-primary mt-1" />
+			<DayMealsView DayMealPlan="@mps?[index]" IsLoading="@isLoading"></DayMealsView>
+		</div>
+		<br/>
+		index++;
+	}
+}
+
+@code {
+	private readonly string[] daysOfTheWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+	private MealPlan[]? mps;
+	private DateTime selectedWeek = DateTime.Now;
+	private bool isLoading = true;
+	private bool isInErrorState = false;
+
+	protected override async Task OnInitializedAsync() {
+		await LoadMealPlan(DateTime.Now);
+	}
+
+	// Gets meal plan from the API for the selected week, and sets the state variables
+	private async Task LoadMealPlan(DateTime date) {
+		selectedWeek = dataService.GetStartOfWeek(date);
+		isLoading = true;
+		isInErrorState = false;
+		try {
+			mps = await dataService.GetMealPlanForWeek(selectedWeek);
+		}
+		catch (HttpRequestException) {
+			isInErrorState = true;
+		}
+		isLoading = false;
+	}
+
+	private async Task OnDateChanged(DateTime? date) {
+		await LoadMealPlan(date!.Value);
+	}
+}
