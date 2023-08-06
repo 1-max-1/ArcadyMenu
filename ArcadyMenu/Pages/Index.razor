@@ -1,7 +1,134 @@
 ﻿@page "/"
+@inject IDataService dataService
+@inject IJSRuntime JS
+@implements IDisposable
 
 <PageTitle>Arcady Menu 2023</PageTitle>
-<SmallScreenPage/>
+
+@* This message will rarely be seen because the isLargeScreen variable will be set almost instantly, but just in case. *@
+@if (isLargeScreen == null) {
+	<div class="w-100 h-100 d-flex align-items-center justify-content-center"><p>Loading...</p></div>
+	return;
+}
+
+@if (isInErrorState) {
+	<div class="d-flex flex-column align-items-center mt-5">
+		<p>Something went wrong.</p>
+		<RadzenButton Click="@(() => LoadMealPlan(selectedWeek))">Retry</RadzenButton>
+	</div>
+	return;
+}
+
+<div class="container-fluid">
+	<div class="d-flex justify-content-center mb-2 mx-1">
+		<p class="me-2 mb-0 align-self-center" style="font-size: 0.95em;">Menu for the week of:</p>
+		<RadzenDatePicker TValue="DateTime" ShowTime="@false" Value="@selectedWeek" Change="@OnDateChanged" DateFormat="dd/MM/yyyy" Style="width: 160px;" />
+	</div>
+
+	@* For large screen sizes, render all the days in a list.*@
+	@if (isLargeScreen.Value) {
+		int index = 0;
+		foreach (string dayOfWeek in daysOfTheWeek) {
+			<div class="mb-5">
+				<h3 class="mb-0"><b>@dayOfWeek</b></h3>
+				<hr class="rz-color-primary mt-1" />
+				<DayMealsView DayMealPlan="@mps?[index]" IsLoading="@isLoading"></DayMealsView>
+			</div>
+			<br />
+			index++;
+		}
+	}
+	@* For small screen sizes, render one day per tab item *@
+	else {
+		<RadzenTabs SelectedIndex="@selectedTabIndex" Change="@OnTabIndexChanged">
+			<Tabs>
+				@{ int index = 0; }
+				@foreach (string dayOfWeek in daysOfTheWeekAbbreviations) {
+					int i = index;
+					index++;
+
+					@* Only render a meal plan for the active tab, otherwise we are wasting resources *@
+					<RadzenTabsItem Text="@dayOfWeek">
+						@if (i == selectedTabIndex) {
+							<DayMealsView DayMealPlan="@mp" IsLoading="@isLoading" />
+						}
+					</RadzenTabsItem>
+				}
+			</Tabs>
+		</RadzenTabs>
+	}
+</div>
 
 @code {
+	private readonly string[] daysOfTheWeekAbbreviations = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+	private readonly string[] daysOfTheWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+
+	private DateTime selectedWeek = DateTime.Now;
+	private int selectedTabIndex = 0; // Small screen size layout has a tab component
+
+	// One meal plan for small screen, whole week for large screen
+	private MealPlan? mp;
+	private MealPlan[]? mps;
+
+	private bool isLoading = true;
+	private bool isInErrorState = false;
+	private bool? isLargeScreen = null;
+
+	// Reference to us so the JS code can call back
+	private DotNetObjectReference<Index>? objRef;
+
+	protected override async Task OnInitializedAsync() {
+		objRef = DotNetObjectReference.Create(this);
+		isLargeScreen = await JS.InvokeAsync<bool>("initializeScreenSizeObserver", new[]{objRef});
+		StateHasChanged();
+		await LoadMealPlan(selectedWeek);
+	}
+
+	public void Dispose() {
+		objRef?.Dispose();
+	}
+
+	// Grabs meal plan from backend then loads the data into the variables. Handles loading and error variables.
+	private async Task LoadMealPlan(DateTime date) {
+		isInErrorState = false;
+		isLoading = true;
+		try {
+			if (isLargeScreen!.Value) {
+				mps = await dataService.GetMealPlanForWeek(date);
+			}
+			else {
+				mp = await dataService.GetMealPlanForDay(date);
+			}
+		}
+		catch (HttpRequestException) {
+			isInErrorState = true;
+		}
+		isLoading = false;
+	}
+
+	private async Task OnDateChanged(DateTime? dateVal) {
+		DateTime date = dateVal!.Value;
+		selectedWeek = dataService.GetStartOfWeek(date);
+		selectedTabIndex = (7 + (int)date.DayOfWeek - 1) % 7;
+		await LoadMealPlan(date);
+	}
+
+	private async Task OnTabIndexChanged(int index) {
+		selectedTabIndex = index;
+		await LoadMealPlan(selectedWeek.AddDays(index));
+	}
+
+	[JSInvokable]
+	public async Task OnScreenSizeChanged(bool screenIsLarge) {
+		isLargeScreen = screenIsLarge;
+		if (screenIsLarge)
+			mp = null;
+		else
+			mps = null;
+
+		Task t = LoadMealPlan(selectedWeek);
+		StateHasChanged();
+		await t;
+		StateHasChanged();
+	}
 }

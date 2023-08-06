@@ -32,6 +32,7 @@ else {
 	private bool isInErrorState = false;
 
 	protected override async Task OnInitializedAsync() {
+		Console.WriteLine("LargeScreenPage OnInitializedAsync");
 		await LoadMealPlan(DateTime.Now);
 	}
 
