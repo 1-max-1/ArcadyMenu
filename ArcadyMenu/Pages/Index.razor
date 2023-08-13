@@ -1,7 +1,90 @@
 ﻿@page "/"
+@inject IDataService dataService
+@inject IJSRuntime JS
 
 <PageTitle>Arcady Menu 2023</PageTitle>
-<SmallScreenPage/>
+
+@if (isInErrorState) {
+	<div class="d-flex flex-column align-items-center mt-5">
+		<p>Something went wrong.</p>
+		<RadzenButton Click="@(() => LoadMealPlan(selectedWeek))">Retry</RadzenButton>
+	</div>
+	return;
+}
+
+<div class="container-fluid">
+	<div class="d-flex justify-content-center mb-2 mx-1">
+		<p class="me-2 mb-0 align-self-center" style="font-size: 0.95em;">Menu for the week of:</p>
+		<RadzenDatePicker TValue="DateTime" ShowTime="@false" Value="@selectedWeek" Change="@OnDateChanged" DateFormat="dd/MM/yyyy" Style="width: 160px;" />
+	</div>
+
+	@* For large screen sizes, render all the days in a list. *@
+	<div class="d-none d-md-block">
+		@{ int index = 0; }
+		@foreach (string dayOfWeek in daysOfTheWeek) {
+			MealPlan? mp = mps?[index];
+			index++;
+			<div class="mb-5">
+				<h3 class="mb-0"><b>@dayOfWeek</b></h3>
+				<hr class="rz-color-primary mt-1" />
+				<DayMealsView DayMealPlan="@mp" IsLoading="@isLoading"></DayMealsView>
+			</div>
+			<br />
+		}
+	</div>
+	@* For small screen sizes, render one day per tab item *@
+	<div class="d-md-none">
+		<RadzenTabs @ref="@tabs" @bind-SelectedIndex="@selectedTabIndex">
+			<Tabs>
+				@{ int index = 0; }
+				@foreach (string dayOfWeek in daysOfTheWeekAbbreviations) {
+					MealPlan? mp = mps?[index];
+					index++;
+					<RadzenTabsItem Text="@dayOfWeek">
+						<DayMealsView DayMealPlan="@mp" IsLoading="@isLoading" />
+					</RadzenTabsItem>
+				}
+			</Tabs>
+		</RadzenTabs>
+	</div>
+</div>
 
 @code {
+	private readonly string[] daysOfTheWeekAbbreviations = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+	private readonly string[] daysOfTheWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+
+	private DateTime selectedWeek = DateTime.Now;
+	private int selectedTabIndex = 0; // Small screen size layout has a tab component
+
+	private MealPlan[]? mps;
+
+	private bool isLoading = true;
+	private bool isInErrorState = false;
+
+	private RadzenTabs? tabs;
+
+	protected override async Task OnInitializedAsync() {
+		await LoadMealPlan(selectedWeek);
+	}
+
+	// Grabs meal plan from backend then loads the data into the variables. Handles loading and error variables.
+	private async Task LoadMealPlan(DateTime date) {
+		isInErrorState = false;
+		isLoading = true;
+		try {
+			mps = await dataService.GetMealPlanForWeek(date);
+		}
+		catch (HttpRequestException) {
+			isInErrorState = true;
+		}
+		isLoading = false;
+	}
+
+	private async Task OnDateChanged(DateTime? dateVal) {
+		DateTime date = dateVal!.Value;
+		selectedWeek = dataService.GetStartOfWeek(date);
+		selectedTabIndex = (7 + (int)date.DayOfWeek - 1) % 7;
+		await LoadMealPlan(date);
+		tabs!.Reload(); // For some reason the tabs view still displays the old data after changing the dat. This will force it to redraw.
+	}
 }
