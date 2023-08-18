@@ -1,22 +1,28 @@
 ﻿<RadzenCard class="@Class" Style="@($"border: 1px solid {MealColor}")">
-	<p class="mb-4 fs-5" style="color: @MealColor;"><b>@MealTitle</b></p>
+	<p class="fs-5" style="color: @MealColor;"><b>@MealTitle</b></p>
 
 	@if (IsLoading) {
 		@ChildContent
 	}
-	else if (FoodItems == null || FoodItems.Count == 0) {
+	else if (MealData == null || MealData.FoodItems.Count == 0) {
 		<p class="text-center mb-4"><b>Menu unavailable</b></p>
 	}
 	else {
-		foreach (var kvp in FoodItems) {
-			<p class="mt-3" style="font-size: 0.7em;">@kvp.Key.ToUpper()</p>
-			<p style="color: @MealColor;">
-				@* HTML wont render the newlines so we need to manually insert breaks here. *@
-				@foreach (var line in kvp.Value.Split("\r\n")) {
-					<b>@line.Trim()</b><br/>
-				}
-			</p>
+		if (MealData.Theme != null) {
+			<p style="color: @MealColor;" class="mt-2">@MealData.Theme</p>
 		}
+
+		<div class="mt-4">
+			@foreach (var kvp in MealData.FoodItems) {
+				<p class="mt-3" style="font-size: 0.7em;">@kvp.Key.ToUpper()</p>
+				<p style="color: @MealColor;">
+					@* HTML wont render the newlines so we need to manually insert breaks here. *@
+					@foreach (var line in kvp.Value.Split("\r\n")) {
+						<b>@line.Trim()</b><br/>
+					}
+				</p>
+			}
+		</div>
 	}
 </RadzenCard>
 
@@ -37,11 +43,11 @@
 	public string MealColor { get; set; } = "#000000";
 
 	/// <summary>
-	/// A list of food items to render on the card. Keys should be categories, values should be food descrfiptions. <br/>
-	/// The <c>Breakfast</c>, <c>Lunch</c> and <c>Dinner</c> properties of a <see cref="MealPlan" /> can be passed here.
+	/// The meal data to render. This will contain food items and a theme. <br />
+	/// If null, or no food items exist, a "no data" message will be displayed.
 	/// </summary>
 	[Parameter]
-	public Dictionary<string, string>? FoodItems { get; set; }
+	public Meal? MealData { get; set; }
 
 	/// <summary> Child content renders when <see cref="IsLoading" /> is <see langword="true"/>. </summary>
 	[Parameter]

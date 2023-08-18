@@ -1,6 +1,6 @@
 ﻿<div class="row row-cols-1 row-cols-md-3 gy-4">
 	<div class="col">
-		<MealView MealTitle="BREAKFAST" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Breakfast" MealColor="#73bffd" Class="h-100">
+		<MealView MealTitle="BREAKFAST" IsLoading="@IsLoading" MealData="@DayMealPlan?.Breakfast" MealColor="#73bffd" Class="h-100">
 			<div class="placeholder-glow" style="color: #73bffd;">
 				<p class="placeholder col-4"></p>
 				<p class="placeholder col-7"></p>
@@ -14,7 +14,7 @@
 	</div>
 
 	<div class="col">
-		<MealView MealTitle="LUNCH" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Lunch" MealColor="#53c908" Class="h-100">
+		<MealView MealTitle="LUNCH" IsLoading="@IsLoading" MealData="@DayMealPlan?.Lunch" MealColor="#53c908" Class="h-100">
 			<div class="placeholder-glow" style="color: #53c908;">
 				<p class="placeholder col-10"></p>
 				<p class="placeholder col-1"></p>
@@ -26,7 +26,7 @@
 	</div>
 
 	<div class="col">
-		<MealView MealTitle="DINNER" IsLoading="@IsLoading" FoodItems="@DayMealPlan?.Dinner" MealColor="#ff801d" Class="h-100">
+		<MealView MealTitle="DINNER" IsLoading="@IsLoading" MealData="@DayMealPlan?.Dinner" MealColor="#ff801d" Class="h-100">
 			<div class="placeholder-glow" style="color: #ff801d;">
 				<p class="placeholder col-5"></p>
 				<p class="col-6"></p>

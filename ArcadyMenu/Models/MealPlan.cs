@@ -1,32 +1,15 @@
 ﻿namespace ArcadyMenu.Models {
-	/// <summary> Class representing a daily meal plan, with food items sorted by breakfast, lunch and dinner. </summary>
+	/// <summary> Class representing a daily meal plan, with meals sorted by breakfast, lunch and dinner. </summary>
 	public class MealPlan {
-		/// <summary>
-		/// The food items available for breakfast. <br/>
-		/// Keys are food categories like "Main Option" or "Vegetarian Option". <br/>
-		/// Values are food descriptions like "Meatlovers pizza" or "Pasta bake".
-		/// </summary>
-		/// <remarks>This dictionary could have zero records.</remarks>
-		public Dictionary<string, string> Breakfast { get; private set; }
+		/// <summary> The data for the "Breakfast" meal. </summary>
+		public Meal Breakfast { get; private set; }
+		/// <summary> The data for the "Lunch" meal. </summary>
+		public Meal Lunch { get; private set; }
+		/// <summary> The data for the "Dinner" meal. </summary>
+		public Meal Dinner { get; private set; }
 
 		/// <summary>
-		/// The food items available for lunch. <br/>
-		/// Keys are food categories like "Main Option" or "Vegetarian Option". <br/>
-		/// Values are food descriptions like "Meatlovers pizza" or "Pasta bake".
-		/// </summary>
-		/// <remarks>This dictionary could have zero records.</remarks>
-		public Dictionary<string, string> Lunch { get; private set; }
-
-		/// <summary>
-		/// The food items available for dinner. <br/>
-		/// Keys are food categories like "Main Option" or "Vegetarian Option". <br/>
-		/// Values are food descriptions like "Meatlovers pizza" or "Pasta bake".
-		/// </summary>
-		/// <remarks>This dictionary could have zero records.</remarks>
-		public Dictionary<string, string> Dinner { get; private set; }
-
-		/// <summary>
-		/// Creates a new <see cref="MealPlan"/> instance. The <c>Breakfast</c>, <c>Lunch</c> and <c>Dinner</c> dictionaries are initialized to empty.
+		/// Creates a new <see cref="MealPlan"/> instance. The food item dictionaries for the <c>Breakfast</c>, <c>Lunch</c> and <c>Dinner</c> meals are initialized to empty.
 		/// </summary>
 		public MealPlan() {
 			Breakfast = new();
