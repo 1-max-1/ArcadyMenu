@@ -15,12 +15,13 @@
 		<div class="mt-4">
 			@foreach (var kvp in MealData.FoodItems) {
 				<p class="mt-3" style="font-size: 0.7em;">@kvp.Key.ToUpper()</p>
-				<p style="color: @MealColor;">
-					@* HTML wont render the newlines so we need to manually insert breaks here. *@
-					@foreach (var line in kvp.Value.Split("\r\n")) {
-						<b>@line.Trim()</b><br/>
+
+				@* Database content has the literal text value "\n" for a newline, it is not a newline character. *@
+				<ul style="color: @MealColor; padding-left: 10px; list-style-type: '- ';" class="mb-0">
+					@foreach (var line in kvp.Value.Split("\\n")) {
+						<li><b>@line.Trim()</b></li>
 					}
-				</p>
+				</ul>
 			}
 		</div>
 	}
