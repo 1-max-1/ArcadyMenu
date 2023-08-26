@@ -4,12 +4,19 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>ArcadyMenu</title>
+    <title>Arcady Menu 2023</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
     <link href="ArcadyMenu.styles.css" rel="stylesheet" />
+
+    <!-- Needed to display favicon in github pages -->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
 
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
 
@@ -22,7 +29,11 @@
 </head>
 
 <body style="background-color: #fdfdfd;">
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="container-fluid d-flex justify-content-center">
+            <p class="fs-1">Starting menu<span style="color: #73bffd;">.</span><span style="color: #53c908;">.</span><span style="color: #ff801d;">.</span></p>
+        </div>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
