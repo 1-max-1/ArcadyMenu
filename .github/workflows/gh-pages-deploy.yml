@@ -46,7 +46,7 @@ jobs:
       # This is needed because otherwise Blazor will try to find all of its stuff at the root URL, but our site is not hosted at the root URL.
       # It is hosted at the repo's subdirectory.
       - name: Change base-tag in index.html from / to ArcadyMenu
-        run: sed -i 's/<base href="\/" \/>/<base href="\/ArcadyMenu\/" \/>/g' ArcadyMenu/wwwroot/index.html
+        run: sed -i 's/<base href="\/" \/>/<base href="\/arcady-menu\/" \/>/g' ArcadyMenu/wwwroot/index.html
       
       # Publishes Blazor project to the release-folder
       - name: Publish Project

@@ -23,8 +23,10 @@ namespace ArcadyMenu {
 
 	public class DataService : IDataService {
 		private readonly HttpClient httpClient;
+		private const string BACKEND_URL = "https://maxs-backends-sg236u8egy34xg.onrender.com/arcadymenu";
+        //private const string BACKEND_URL = "http://localhost:3000/arcadymenu";
 
-		public DataService(HttpClient httpClient) {
+        public DataService(HttpClient httpClient) {
 			this.httpClient = httpClient;
 		}
 
@@ -61,8 +63,8 @@ namespace ArcadyMenu {
 
 		public async Task<MealPlan[]> GetMealPlanForWeek(DateTime date) {
 			MealPlan[] mealPlans = { new(),new(),new(),new(),new(),new(),new() }; // 1 per day of week
-			var foods = await httpClient.GetFromJsonAsync<DBFoodItem[]>($"http://localhost:3000/arcadymenu/mealplan/week/{GetStartOfWeek(date):yyyy-MM-dd}");
-			var themes = await httpClient.GetFromJsonAsync<DBMealTheme[]>($"http://localhost:3000/arcadymenu/mealthemes/week/{GetStartOfWeek(date):yyyy-MM-dd}");
+			var foods = await httpClient.GetFromJsonAsync<DBFoodItem[]>($"{BACKEND_URL}/mealplan/week/{GetStartOfWeek(date):yyyy-MM-dd}");
+			var themes = await httpClient.GetFromJsonAsync<DBMealTheme[]>($"{BACKEND_URL}/mealthemes/week/{GetStartOfWeek(date):yyyy-MM-dd}");
 
 			foreach (DBFoodItem food in foods!) {
 				// Sort food items into their daily meal plans based on DOW (Day Of Week)
