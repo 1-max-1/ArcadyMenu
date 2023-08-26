@@ -1,0 +1,68 @@
+name: Deploy to GitHub Pages
+
+on:
+  # Run workflow on every push to the main branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      # Clone
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+        
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      
+      # Will install all the packages for the project
+      - name: Restore NuGet Packages
+        run: dotnet restore ArcadyMenu/ArcadyMenu.csproj --use-current-runtime
+        
+      # Changes the base-tag in index.html from '/' to 'ArcadyMenu' to match GitHub Pages repository subdirectory.
+      # This is needed because otherwise Blazor will try to find all of its stuff at the root URL, but our site is not hosted at the root URL.
+      # It is hosted at the repo's subdirectory.
+      - name: Change base-tag in index.html from / to ArcadyMenu
+        run: sed -i 's/<base href="\/" \/>/<base href="\/ArcadyMenu\/" \/>/g' ArcadyMenu/wwwroot/index.html
+      
+      # Publishes Blazor project to the release-folder
+      - name: Publish Project
+        run: dotnet publish ArcadyMenu/ArcadyMenu.csproj -c Release -o release --nologo
+        
+      # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
+      # This is needed because Blazor uses underscores in the _framework folder, and without it the project will not function.
+      - name: Add .nojekyll file
+        run: touch release/wwwroot/.nojekyll
+        
+      # Upload publish folder to github pages
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'release/wwwroot'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
