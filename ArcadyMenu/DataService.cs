@@ -23,7 +23,7 @@ namespace ArcadyMenu {
 
 	public class DataService : IDataService {
 		private readonly HttpClient httpClient;
-		private const string BACKEND_URL = "https://maxs-backends-sg236u8egy34xg.onrender.com/arcadymenu";
+		private const string BACKEND_URL = "https://max-backends-10e7dfb0a80f.herokuapp.com/arcadymenu";
         //private const string BACKEND_URL = "http://localhost:3000/arcadymenu";
 
         public DataService(HttpClient httpClient) {
