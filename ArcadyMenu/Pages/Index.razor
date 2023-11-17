@@ -67,6 +67,7 @@
 		selectedWeek = dataService.GetStartOfWeek(DateTime.Now);
 		selectedTabIndex = (7 + (int)DateTime.Now.DayOfWeek - 1) % 7;
 		await LoadMealPlan(selectedWeek);
+		tabs!.Reload(); // The tabs will not show the meals unless this is here. Not sure why.
 	}
 
 	// Grabs meal plan from backend then loads the data into the variables. Handles loading and error variables.
