@@ -64,6 +64,8 @@
 	private RadzenTabs? tabs;
 
 	protected override async Task OnInitializedAsync() {
+		selectedWeek = dataService.GetStartOfWeek(DateTime.Now);
+		selectedTabIndex = (7 + (int)DateTime.Now.DayOfWeek - 1) % 7;
 		await LoadMealPlan(selectedWeek);
 	}
 
@@ -85,6 +87,6 @@
 		selectedWeek = dataService.GetStartOfWeek(date);
 		selectedTabIndex = (7 + (int)date.DayOfWeek - 1) % 7;
 		await LoadMealPlan(date);
-		tabs!.Reload(); // For some reason the tabs view still displays the old data after changing the dat. This will force it to redraw.
+		tabs!.Reload(); // For some reason the tabs view still displays the old data after changing the date. This will force it to redraw.
 	}
 }
